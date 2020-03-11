@@ -1,5 +1,7 @@
 import cv2 as cv
 import numpy as np
+import time
+import os
 
 capture = cv.VideoCapture(1)
 capture2 = cv.VideoCapture(2)
@@ -63,10 +65,6 @@ while True:
     frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     frame2 = cv.cvtColor(frame2, cv.COLOR_BGR2GRAY)
 
-    # blur = cv2.GaussianBlur(frame, (11,11), 0)
-    # blur2 = cv2.GaussianBlur(frame2, (11,11), 0)
-
-    # blurDiff = cv2.absdiff(blur, blur2)
     sortedDiff = cv.absdiff(frame, frame2)
     originDiff = cv.absdiff(grayframe, grapyframe2)
 
@@ -76,22 +74,25 @@ while True:
         cv.imshow("frame1", frame)
         cv.imshow("frame2", frame2)
 
-        # cv2.imshow("thresh1", th1)
-        # cv2.imshow("thresh2", th2)
-        # cv2.imshow("thresh3", th3)
-
-        # cv2.imshow("blur1", blur)
-        # cv2.imshow("blur2", blur2)
-
-        # cv2.imshow("blurDiff", blurDiff)
         cv.imshow("sortedDiff", sortedDiff)
         cv.imshow("originDiff", originDiff)
-        
-        cv.imshow('thresh', th1)
 
 
-    if cv.waitKey(1) > 0: 
+    ch = cv.waitKey(1)
+
+    if ch == 27:
         break
 
+    elif ch == 120:
+        _time = time.strftime("%Y-%m-%d-%H-%M-%S") + '-'
+
+        path = os.getcwd() + '/experiment/' + _time
+        
+        cv.imwrite(path + 'frame1.jpg', frame)
+        cv.imwrite(path + 'frame2.jpg', frame2)
+        cv.imwrite(path + 'sortedDiff.jpg', sortedDiff)
+        cv.imwrite(path + 'originDiff.jpg', originDiff)
+        print(path)
+
 capture.release()
-cv2.destroyAllWindows()
+cv.destroyAllWindows()
